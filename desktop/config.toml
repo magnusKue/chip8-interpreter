@@ -1,0 +1,28 @@
+# Here you can add you themes. The first
+# entry will be selected as default.
+# Format: [Background, Foreground, Text]
+themes = [
+    ["#3c3c3c", "#00b280", "#c2b280"], # Theme 1
+    ["#000000", "#FFFFFF", "#FFFFFF"], # Theme 2
+    ["#B57114", "#962B09", "#706513"]  # Theme 3
+]
+
+# Displays the entered path to the selected
+# ROM at the top middle of the screen.
+show_path = true
+
+# Displays current fps in top left cornor
+show_fps = true
+
+# This limits the fps and with it the 
+# CPU cycles per second. Different games
+# may require different values here.
+# Default: 144
+max_fps = 144
+
+# How often the timers tick per second.
+# It is recommended to leave at 60 for
+# accuracy.
+# Default: 144
+tps = 60
+
