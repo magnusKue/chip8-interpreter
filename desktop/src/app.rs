@@ -93,7 +93,7 @@ impl AppManager {
         while !self.rl.window_should_close() {
 
             let framebuffer_modified = self.emulator.tick();
-            println!("{}", framebuffer_modified);
+            println!("{:?}", framebuffer_modified);
             
             if self.update_clock() {
                 // BEEP

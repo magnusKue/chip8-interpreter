@@ -1,5 +1,4 @@
 use rand::Rng;
-// use chrono::Local;
 
 const FONTSET_SIZE: usize = 80;
 
@@ -127,14 +126,13 @@ impl Emu {
     
     // CPU
     
-    pub fn tick(&mut self) {
+    pub fn tick(&mut self) -> bool {
         // fetch
         let opcode = self.fetch();
         // decode and execute
-        self.better_execute(opcode);
+        let framebuffer_modified = self.execute(opcode);
 
-        // let timestamp = Local::now().format("%H:%M:%S.%f").to_string();
-        // println!("[{}] {:?}", timestamp, self.pressed_keys);
+        framebuffer_modified
         
     }
 
@@ -148,15 +146,17 @@ impl Emu {
         opcode
     }
 
-    fn better_execute(&mut self, op: u16) {
+    fn execute(&mut self, op: u16) -> bool {
         let digit1 = (op & 0xF000) >> 12;
         let digit2 = (op & 0x0F00) >> 8;
         let digit3 = (op & 0x00F0) >> 4;
         let digit4 = op & 0x000F;
 
+        let mut framebuffer_modified = false;
+
         match (digit1, digit2, digit3, digit4) {
             // NOP
-            (0, 0, 0, 0) => return,
+            (0, 0, 0, 0) => return false,
             // CLS
             (0, 0, 0xE, 0) => {
                 self.screen = [false; SCREEN_WIDTH * SCREEN_HEIGHT];
@@ -346,6 +346,8 @@ impl Emu {
                 } else {
                     self.registers[0xF] = 0;
                 }
+
+                framebuffer_modified = true;
             },
             // SKIP KEY PRESS
             (0xE, _, 9, 0xE) => {
@@ -443,21 +445,26 @@ impl Emu {
             },
             (_, _, _, _) => unimplemented!("Unimplemented opcode: {:#04x}", op),
         }
+
+        framebuffer_modified
     }
     // TIMERS
 
-    pub fn tick_timers(&mut self) {
+    pub fn tick_timers(&mut self) -> bool {
         // println!("ticked timer");
+        let mut beep = false;
         if self.delay_timer > 0 {
             self.delay_timer -= 1;
         }
 
         if self.sound_timer > 0 {
             if self.sound_timer == 1 {
-                // beep
+                beep = true;
             }
             self.sound_timer -= 1;
         }
+
+        beep
     }
 
 }
