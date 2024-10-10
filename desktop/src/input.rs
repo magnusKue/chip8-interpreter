@@ -122,6 +122,7 @@ impl InputManager {
         let mut used = Vec::new();
 
         for pair in raw {
+            println!("{:?}", pair);
             // Bsp: pair = { "RESET", "Z" }
 
             used.push(pair[1].clone());

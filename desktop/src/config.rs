@@ -4,10 +4,17 @@ use std::fs;
 #[derive(Deserialize, Debug)]
 pub struct Config {
     pub themes: Vec<Vec<String>>,  
+    
     pub show_path: bool,
     pub show_fps: bool,
+    
     pub max_fps: u32,
     pub tps: u32,
+
+    pub frequency: f32,
+    pub duration: f32,
+    pub volume: f32,
+
     pub game_input: Vec<String>,
     pub emulator_input: Vec<Vec<String>>,
 }

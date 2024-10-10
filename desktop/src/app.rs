@@ -9,7 +9,8 @@ use std::collections::HashMap;
 
 use crate::config;
 use crate::input::InputManager;
-use crate::themes::*;
+use crate::audio::AudioManager;
+use crate::themes::ThemeManager;
 
 const WIN_SCALE_FAC: u32 = 15;
 const WIN_WIDTH: u32 = (SCREEN_WIDTH as u32) * WIN_SCALE_FAC;
@@ -27,18 +28,18 @@ const WELCOME: &str = r#"
 
 pub struct AppManager {
 
+    emulator: Emu,
     clock_timer: f32,
     
     rl: RaylibHandle,
     thread: RaylibThread,
+    canvas: Image,
     
     config: config::Config,
     theme_manager: ThemeManager,
-
-    canvas: Image,
-    
-    emulator: Emu,
+    audio_manager: AudioManager,
     input_manager: InputManager,
+    
     args: Vec<String>,
 }
 
@@ -66,7 +67,7 @@ impl AppManager {
         let mut instance = AppManager {
             
             clock_timer: 0.,
-
+            emulator: Emu::new(),
             
             rl: raylib_handle,
             thread: raylib_thread,
@@ -75,10 +76,12 @@ impl AppManager {
             config: config::read_config(),
             theme_manager: ThemeManager::new(),
             input_manager: InputManager::new(),
-            emulator: Emu::new(),
+            audio_manager: AudioManager::new(),
 
             args: args,
         };
+        instance.audio_manager.load_values_from_config(&instance.config);
+        instance.audio_manager.play_async_beep();
         instance.input_manager.generate_keymaps_from_config(&instance.config);
         instance.theme_manager.parse_themes(&instance.config);
 
@@ -88,9 +91,15 @@ impl AppManager {
 
     pub fn main_loop(&mut self) {
         while !self.rl.window_should_close() {
+
             self.emulator.tick();
-            self.update_clock();
             
+            if self.update_clock() {
+                // BEEP
+                self.audio_manager.play_async_beep();
+            }
+
+        
             self.input_manager.handle_game_input(&mut self.emulator, &self.rl);
             let actions = self.input_manager.handle_emu_input(&self.rl);
             self.handle_action(actions);
@@ -135,13 +144,17 @@ impl AppManager {
         }
     }
 
-    fn update_clock(&mut self) {
+    fn update_clock(&mut self) -> bool{
         self.clock_timer += self.rl.get_frame_time();
-    
+        
+        let mut beep = false;
+
         if self.clock_timer >= 1. / (self.config.tps as f32) {
-            self.emulator.tick_timers();
+            beep = self.emulator.tick_timers();
             self.clock_timer = 0.;
         }
+
+        beep
     }
 
     pub fn load_rom(&mut self, path: Option<String>) {
@@ -172,6 +185,10 @@ impl AppManager {
                     println!("ACTION: Switched theme");
                     self.next_theme();
                 },
+                "HONK" => {
+                    println!("HONK: HONK HONK!");
+                    self.audio_manager.play_async_beep();
+                }
                 _ => {
                     print!("ERROR: Unimplemented ACTION");
                 }

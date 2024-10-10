@@ -2,6 +2,7 @@ mod app;
 mod config;
 mod themes;
 mod input;
+mod audio;
 
 use app::AppManager;
 
