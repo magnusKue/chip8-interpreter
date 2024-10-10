@@ -92,7 +92,8 @@ impl AppManager {
     pub fn main_loop(&mut self) {
         while !self.rl.window_should_close() {
 
-            self.emulator.tick();
+            let framebuffer_modified = self.emulator.tick();
+            println!("{}", framebuffer_modified);
             
             if self.update_clock() {
                 // BEEP
@@ -103,36 +104,42 @@ impl AppManager {
             self.input_manager.handle_game_input(&mut self.emulator, &self.rl);
             let actions = self.input_manager.handle_emu_input(&self.rl);
             self.handle_action(actions);
-
-            self.render_game();
+    
+            self.render_game(framebuffer_modified);
         }
     }
 
-    fn render_game(&mut self) {
-        let screenbuffer = self.emulator.get_display();
-        
-        for x in 0..SCREEN_WIDTH {
-            for y in 0..SCREEN_HEIGHT {
-                let pixel_color = if screenbuffer[x + SCREEN_WIDTH * y] {
-                    self.get_ui_col("FG".to_string())
-                } else {
-                    self.get_ui_col("BG".to_string())
-                };
-                
-                self.canvas.draw_pixel(x as i32, y as i32, pixel_color);
+    fn render_game(&mut self, framebuffer_modified: bool) {
+        let texture: Texture2D;
+
+        if framebuffer_modified {
+            let screenbuffer = self.emulator.get_display();
+            
+            for x in 0..SCREEN_WIDTH {
+                for y in 0..SCREEN_HEIGHT {
+                    let pixel_color = if screenbuffer[x + SCREEN_WIDTH * y] {
+                        self.get_ui_col("FG".to_string())
+                    } else {
+                        self.get_ui_col("BG".to_string())
+                    };
+                    
+                    self.canvas.draw_pixel(x as i32, y as i32, pixel_color);
+                }
             }
         }
 
-        let texture = self.rl.load_texture_from_image(&self.thread, &self.canvas).unwrap();
+        texture = self.rl.load_texture_from_image(&self.thread, &self.canvas).unwrap();
+
+
         let rom_path = self.args[1].clone();
         let text_col = self.get_ui_col("FILE".to_string());
-        
+
         let mut d = self.rl.begin_drawing(&self.thread);
         
         d.clear_background(Color::RED);
-        
-        d.draw_texture_ex(&texture, Vector2::new(0.,0.), 0., (WIN_SCALE_FAC) as f32, Color::WHITE);
 
+        d.draw_texture_ex(&texture, Vector2::new(0.,0.), 0., (WIN_SCALE_FAC) as f32, Color::WHITE);
+        
 
         let text_width = d.measure_text(&rom_path.as_str(), 20) as u32;
         let x_pos = ((WIN_WIDTH - text_width) as f32) * 0.5;
@@ -143,6 +150,7 @@ impl AppManager {
             d.draw_text(&format!("{}", d.get_fps()), 10, 10, 20, text_col);
         }
     }
+    
 
     fn update_clock(&mut self) -> bool{
         self.clock_timer += self.rl.get_frame_time();
