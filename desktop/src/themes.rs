@@ -25,7 +25,7 @@ impl ThemeManager {
                 HashMap::from([
                     ("BG".to_string(), theme[0].to_string()),
                     ("FG".to_string(), theme[1].to_string()),
-                    ("FILE".to_string(), theme[2].to_string())
+                    ("TEXT".to_string(), theme[2].to_string())
                 ])
             );
         }

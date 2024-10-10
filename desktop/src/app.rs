@@ -50,13 +50,14 @@ impl AppManager {
         println!("\x1b[1;31m {} \x1b[0m", WELCOME);
         
         // init raylib window
-        let (raylib_handle, raylib_thread) = raylib::init()
+        let (mut raylib_handle, raylib_thread) = raylib::init()
             .resizable()
             .size(WIN_WIDTH as i32, WIN_HEIGHT as i32)
             .title("Chip8 emulator")
             .build();
 
-        raylib_handle.set_trace_log(TraceLogLevel::LOG_ERROR);
+        raylib_handle.set_trace_log(TraceLogLevel::LOG_NONE);
+        raylib_handle.set_exit_key(None);
 
         let args: Vec<_> = env::args().collect();
             if args.len() != 2 {
@@ -86,16 +87,17 @@ impl AppManager {
         instance.theme_manager.parse_themes(&instance.config);
 
         instance.rl.set_target_fps(instance.config.max_fps);
+        instance.canvas.clear_background(instance.get_ui_col("BG".to_string()));
+        instance.canvas.draw_text("LOADING..", 1, 3, 13, instance.get_ui_col("TEXT".to_string()));
         instance
     }
 
     pub fn main_loop(&mut self) {
         while !self.rl.window_should_close() {
 
-            let framebuffer_modified = self.emulator.tick();
-            println!("{:?}", framebuffer_modified);
+            let mut visuals_modified = self.emulator.tick();
             
-            if self.update_clock() {
+            if self.update_clocks() {
                 // BEEP
                 self.audio_manager.play_async_beep();
             }
@@ -103,9 +105,9 @@ impl AppManager {
         
             self.input_manager.handle_game_input(&mut self.emulator, &self.rl);
             let actions = self.input_manager.handle_emu_input(&self.rl);
-            self.handle_action(actions);
+            visuals_modified |= self.handle_action(actions);
     
-            self.render_game(framebuffer_modified);
+            self.render_game(visuals_modified);
         }
     }
 
@@ -132,7 +134,7 @@ impl AppManager {
 
 
         let rom_path = self.args[1].clone();
-        let text_col = self.get_ui_col("FILE".to_string());
+        let text_col = self.get_ui_col("TEXT".to_string());
 
         let mut d = self.rl.begin_drawing(&self.thread);
         
@@ -152,7 +154,7 @@ impl AppManager {
     }
     
 
-    fn update_clock(&mut self) -> bool{
+    fn update_clocks(&mut self) -> bool{
         self.clock_timer += self.rl.get_frame_time();
         
         let mut beep = false;
@@ -181,7 +183,8 @@ impl AppManager {
         println!("INFO: Loaded ROM successfully");
     }
 
-    fn handle_action(&mut self, actions: Vec<String>) {
+    fn handle_action(&mut self, actions: Vec<String>) ->bool {
+        let mut visuals_modified = false;
         for action in actions {
             match action.as_str() {
                 "RESET" => {
@@ -192,16 +195,23 @@ impl AppManager {
                 "NEXT_THEME" => {
                     println!("ACTION: Switched theme");
                     self.next_theme();
+                    visuals_modified = true;
                 },
                 "HONK" => {
                     println!("HONK: HONK HONK!");
                     self.audio_manager.play_async_beep();
                 }
+                
+                "EXIT" => {
+                    println!("ACTION: Exiting game");
+                    process::exit(0);
+                }
                 _ => {
                     print!("ERROR: Unimplemented ACTION");
                 }
             }
-        }
+        };
+        visuals_modified
     }
 
     fn get_ui_col(&self, color_name: String) -> Color {

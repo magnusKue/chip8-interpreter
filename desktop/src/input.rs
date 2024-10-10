@@ -128,7 +128,7 @@ impl InputManager {
             
             emu_map.insert(
                 pair[0].clone(), 
-                *self.name_to_key_map.get(&pair[1]).expect("df")
+                *self.name_to_key_map.get(&pair[1]).expect("ERROR: Invalid Key name in config")
             );
         }
         self.emu_keymap = emu_map;
@@ -146,8 +146,8 @@ impl InputManager {
                 process::exit(0);
             }
             game_map.insert(
-                *self.name_to_key_map.get(&value).expect("df"), 
-                *self.index_to_hex_map.get(&(index as u32)).expect("df")
+                *self.name_to_key_map.get(&value).expect("ERROR: Invalid Key name in config"), 
+                *self.index_to_hex_map.get(&(index as u32)).expect("ERROR: Invalid Key data in config")
             );
         }
         self.game_keymap = game_map;

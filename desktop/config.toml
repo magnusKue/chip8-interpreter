@@ -26,9 +26,9 @@ show_path = true
 show_fps = true
 
 # This limits the FPS and, with it, the 
-# CPU cycles per second. Different games
-# may require different values here.
-max_fps = 400000
+# CPU cycles per second. This can affect
+# game speed so be careful.
+max_fps = 200
 
 # How often the timers tick per second.
 # It is recommended to leave it at 60 for
