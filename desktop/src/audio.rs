@@ -7,7 +7,7 @@ pub struct AudioManager {
     frequency: f32, 
     duration: f32,
     volume: f32,
-    stream: Arc<Mutex<OutputStream>>,
+    _stream: Arc<Mutex<OutputStream>>,
     sink: Arc<Mutex<Sink>>,
 }
 
@@ -21,7 +21,7 @@ impl AudioManager {
             duration: 0.,
             volume: 0.,
 
-            stream: Arc::new(Mutex::new(stream)),
+            _stream: Arc::new(Mutex::new(stream)),
             sink: Arc::new(Mutex::new(sink)),
         }
     }
@@ -33,7 +33,6 @@ impl AudioManager {
     }
 
     pub fn play_async_beep(&self) {
-        println!("BEEEEEEEEEEEEEP {}", self.frequency);
 
         let sink = self.sink.clone();
         let frequency = self.frequency;
