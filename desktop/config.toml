@@ -1,12 +1,23 @@
-# Here you can add you themes. The first
+#
+#        The Rust
+#        ______ _______ _______ ______ ______ 
+#       |      |   |   |_     _|   __ \  __  |
+#       |   ---|       |_|   |_|    __/  __  |
+#       |______|___|___|_______|___|  |______|
+#                                   Emulator
+#
+#
+# SETTINGS:
+#
+# Here you can add custom themes. The first
 # entry will be selected as default.
 # Format: [Background, Foreground, Text]
 themes = [
-    ["#3c3c3c", "#00b280", "#c2b280"], # Theme 1
-    ["#000000", "#FFFFFF", "#FFFFFF"], # Theme 2
-    ["#B57114", "#962B09", "#706513"]  # Theme 3
+    ["#3c3c3c", "#00b280", "#c2b280"],
+    ["#000000", "#FFFFFF", "#FFFFFF"],
+    ["#B57114", "#962B09", "#706513"] 
 ]
-
+#
 # Displays the entered path to the selected
 # ROM at the top middle of the screen.
 show_path = true
@@ -14,15 +25,49 @@ show_path = true
 # Displays current fps in top left cornor
 show_fps = true
 
-# This limits the fps and with it the 
+# This limits the FPS and, with it, the 
 # CPU cycles per second. Different games
 # may require different values here.
-# Default: 144
 max_fps = 144
 
 # How often the timers tick per second.
-# It is recommended to leave at 60 for
+# It is recommended to leave it at 60 for
 # accuracy.
-# Default: 144
 tps = 60
+
+# The following resembles the CHIP-8 4x4
+# keyboard matrix. Just replace any key
+# with 0-9, A-Z, TAB, SPACE, UP, DOWN, 
+# LEFT, RIGHT, ENTER, or ESCAPE.
+# Imagine the matrix as a bunch of stickers,
+# put on the original chip8 keyboard,
+# describing what each key does.
+# The usually used configuration is:
+#
+#       game_input = [
+#           "1", "2", "3", "4",
+#           "Q", "W", "E", "R",
+#           "A", "S", "D", "F",
+#           "Y", "X", "C", "V" 
+#       ]
+#
+# In my experience, the following works
+# better with most ROMs.
+# Just try out what works for you!
+game_input = [
+    "V", "W",     "3", "4",
+    "A", "SPACE", "D", "R",
+    "Q", "S",     "E", "F",
+    "Y", "X",     "C", "1"
+]
+
+# These are the inputs that control the 
+# emulator. Make sure these don't collide
+# with the game inputs!
+# Format: ["ACTION", "KEY"]
+emulator_input = [
+    ["RESET", "K"],
+    ["EXIT", "ESCAPE"],
+    ["NEXT_THEME", "T"],
+]
 

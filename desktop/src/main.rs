@@ -1,11 +1,12 @@
-mod ui;
+mod app;
 mod config;
 mod themes;
+mod input;
 
-use ui::UI;
+use app::AppManager;
 
 fn main() {
-    let mut ui = UI::new();
+    let mut ui = AppManager::new();
 
     ui.load_rom(None);
 

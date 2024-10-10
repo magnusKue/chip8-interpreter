@@ -8,6 +8,8 @@ pub struct Config {
     pub show_fps: bool,
     pub max_fps: u32,
     pub tps: u32,
+    pub game_input: Vec<String>,
+    pub emulator_input: Vec<Vec<String>>,
 }
 
 pub fn read_config() -> Config {

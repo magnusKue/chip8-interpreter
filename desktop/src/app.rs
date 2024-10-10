@@ -7,17 +7,25 @@ use std::io::Read;
 use std::process;
 use std::collections::HashMap;
 
-use raylib::consts::KeyboardKey::*;
-
 use crate::config;
+use crate::input::InputManager;
 use crate::themes::*;
 
 const WIN_SCALE_FAC: u32 = 15;
 const WIN_WIDTH: u32 = (SCREEN_WIDTH as u32) * WIN_SCALE_FAC;
 const WIN_HEIGHT: u32 = (SCREEN_HEIGHT as u32) * WIN_SCALE_FAC;
 
-pub struct UI {
-    game_keymap: HashMap<KeyboardKey, u8>,
+const WELCOME: &str = r#"
+        The Rust
+        ______ _______ _______ ______ ______ 
+       |      |   |   |_     _|   __ \  __  |
+       |   ---|       |_|   |_|    __/  __  |
+       |______|___|___|_______|___|  |______|
+                                   Emulator
+
+"#;
+
+pub struct AppManager {
 
     clock_timer: f32,
     
@@ -30,13 +38,16 @@ pub struct UI {
     canvas: Image,
     
     emulator: Emu,
-    emu_keymap: HashMap<String, KeyboardKey>,
-
+    input_manager: InputManager,
     args: Vec<String>,
 }
 
-impl UI {
+impl AppManager {
     pub fn new() -> Self {
+
+        // print welcome message
+        println!("\x1b[1;31m {} \x1b[0m", WELCOME);
+        
         // init raylib window
         let (raylib_handle, raylib_thread) = raylib::init()
             .resizable()
@@ -44,7 +55,7 @@ impl UI {
             .title("Chip8 emulator")
             .build();
 
-        raylib_handle.set_trace_log(TraceLogLevel::LOG_NONE);
+        raylib_handle.set_trace_log(TraceLogLevel::LOG_ERROR);
 
         let args: Vec<_> = env::args().collect();
             if args.len() != 2 {
@@ -52,8 +63,7 @@ impl UI {
                 process::exit(0);
             }
         
-        let mut instance = UI {
-            game_keymap: Self::get_game_keymap(),
+        let mut instance = AppManager {
             
             clock_timer: 0.,
 
@@ -64,15 +74,14 @@ impl UI {
             
             config: config::read_config(),
             theme_manager: ThemeManager::new(),
-
+            input_manager: InputManager::new(),
             emulator: Emu::new(),
-
-            emu_keymap: Self::get_emu_keymap(),
 
             args: args,
         };
-        
+        instance.input_manager.generate_keymaps_from_config(&instance.config);
         instance.theme_manager.parse_themes(&instance.config);
+
         instance.rl.set_target_fps(instance.config.max_fps);
         instance
     }
@@ -82,46 +91,11 @@ impl UI {
             self.emulator.tick();
             self.update_clock();
             
-            self.handle_game_input();
-            self.handle_emu_input();
+            self.input_manager.handle_game_input(&mut self.emulator, &self.rl);
+            let actions = self.input_manager.handle_emu_input(&self.rl);
+            self.handle_action(actions);
 
             self.render_game();
-        }
-    }
-    
-    fn handle_game_input(&mut self) {
-        for (ray_key, key_id) in &self.game_keymap {
-            if self.rl.is_key_down(ray_key.clone()) {
-                self.emulator.keypress(key_id.clone() as usize, true);
-            }
-            else {
-                self.emulator.keypress(key_id.clone() as usize, false);
-            }
-        }
-    }
-
-    fn handle_emu_input(&mut self) {
-
-        //fuck the borrow checker!
-        let emu_keymap = self.emu_keymap.clone();
-
-        for (action, ray_key) in emu_keymap {
-            if self.rl.is_key_pressed(ray_key.clone()) {
-                match action.as_str() {
-                    "RESET" => {
-                        println!("ACTION: RESET EMULATOR");
-                        self.emulator.reset();
-                        self.load_rom(None);
-                    },
-                    "NEXT_THEME" => {
-                        println!("ACTION: Switched theme");
-                        self.next_theme();
-                    },
-                    _ => {
-                        print!("ERROR: Unimplemented keyboard action");
-                    }
-                }
-            }
         }
     }
 
@@ -186,54 +160,23 @@ impl UI {
         println!("INFO: Loaded ROM successfully");
     }
 
-    fn get_game_keymap() -> HashMap<KeyboardKey, u8> {
-        let _tetris_keymap: HashMap<KeyboardKey, u8> = HashMap::from([
-            (KEY_ONE, 0x1),
-            (KEY_TWO, 0x2),
-            (KEY_THREE, 0x3),
-            (KEY_FOUR, 0xC),
-            (KEY_Q, 0x4),
-            (KEY_W, 0x5),
-            (KEY_E, 0x6),
-            (KEY_R, 0xD),
-            (KEY_A, 0x7),
-            (KEY_S, 0x8),
-            (KEY_D, 0x9),
-            (KEY_F, 0xE),
-            (KEY_Z, 0xA),
-            (KEY_X, 0x0),
-            (KEY_C, 0xB),
-            (KEY_V, 0xF),
-        ]);
-    
-        // KEYMAP:
-        let wasd_keymap: HashMap<KeyboardKey, u8> = HashMap::from([
-            (KEY_ONE, 0x1),
-            (KEY_W, 0x2),
-            (KEY_THREE, 0x3),
-            (KEY_FOUR, 0xC),
-            (KEY_A, 0x4),
-            (KEY_SPACE, 0x5),
-            (KEY_D, 0x6),
-            (KEY_R, 0xD),
-            (KEY_Q, 0x7),
-            (KEY_S, 0x8),
-            (KEY_E, 0x9),
-            (KEY_F, 0xE),
-            (KEY_Z, 0xA),
-            (KEY_X, 0x0),
-            (KEY_C, 0xB),
-            (KEY_V, 0xF),
-        ]);
-    
-        wasd_keymap
-    }
-
-    fn get_emu_keymap() -> HashMap<String, KeyboardKey> {
-        HashMap::from([
-            ("RESET".to_string(), KEY_T),
-            ("NEXT_THEME".to_string(), KEY_G),
-        ])
+    fn handle_action(&mut self, actions: Vec<String>) {
+        for action in actions {
+            match action.as_str() {
+                "RESET" => {
+                    println!("ACTION: RESET EMULATOR");
+                    self.emulator.reset();
+                    self.load_rom(None);
+                },
+                "NEXT_THEME" => {
+                    println!("ACTION: Switched theme");
+                    self.next_theme();
+                },
+                _ => {
+                    print!("ERROR: Unimplemented ACTION");
+                }
+            }
+        }
     }
 
     fn get_ui_col(&self, color_name: String) -> Color {
