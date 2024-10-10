@@ -1,8 +1,8 @@
 mod app;
-mod config;
-mod themes;
-mod input;
 mod audio;
+mod config;
+mod input;
+mod themes;
 
 use app::AppManager;
 
