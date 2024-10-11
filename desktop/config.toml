@@ -77,9 +77,9 @@ game_input = [
 # with the game inputs!
 # Format: ["ACTION", "KEY"]
 emulator_input = [
-    ["PAUSE",       "P"     ]
+    ["PAUSE",       "P"     ],
     ["RESET",       "K"     ],
     ["NEXT_THEME",  "T"     ],
-    ["EXIT",        "ESCAPE"],
+    ["EXIT",        "ESCAPE"]
 ]
 

@@ -61,6 +61,8 @@ impl GraphicsManager {
 
         let rom_path = args[1].clone();
         let text_col = self.get_ui_col("TEXT".to_string());
+        let fg_col = self.get_ui_col("FG".to_string());
+        let bg_col = self.get_ui_col("BG".to_string());
 
         let mut d = self.rl.begin_drawing(&self.thread);
         
@@ -78,11 +80,15 @@ impl GraphicsManager {
             d.draw_text(&format!("{}", d.get_fps()), 10, 10, 20, text_col);
         }
 
-        Self::render_pause_menu(d);
+        if emulator.is_paused {
+            Self::render_pause_menu(d,bg_col,fg_col,text_col);
+        }
     }
 
-    fn render_pause_menu(mut d: RaylibDrawHandle) {
-        d.draw_text("Hello", 20, 20, 20, Color::RED);
+    fn render_pause_menu(mut d: RaylibDrawHandle, bg_col: Color, fg_col: Color, txt_col: Color) {
+        d.draw_text("Paused", 20, 20, 20, txt_col);
+        d.draw_rectangle(40, 40, 200, 200, bg_col);
+        d.draw_rectangle_lines(40, 40, 200, 200, fg_col);
     }
     
 
