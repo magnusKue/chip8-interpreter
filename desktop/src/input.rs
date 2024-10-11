@@ -108,8 +108,8 @@ impl InputManager {
     }
 
     pub fn generate_keymaps_from_config(&mut self, config: &Config) {
-        let used_keys = self.generate_emu_keymap_from_config(&config);
-        self.generate_game_keymap_from_config(&config, used_keys);
+        let used_keys = self.generate_emu_keymap_from_config(config);
+        self.generate_game_keymap_from_config(config, used_keys);
 
         println!("INFO: Generated keymaps from config")
     }
@@ -156,11 +156,11 @@ impl InputManager {
     pub fn handle_game_input(&mut self, emulator: &mut Emu, rl: &RaylibHandle) {
 
         for (ray_key, key_id) in &self.game_keymap {
-            if rl.is_key_down(ray_key.clone()) {
-                emulator.keypress(key_id.clone() as usize, true);
+            if rl.is_key_down(*ray_key) {
+                emulator.keypress(*key_id as usize, true);
             }
             else {
-                emulator.keypress(key_id.clone() as usize, false);
+                emulator.keypress(*key_id as usize, false);
             }
         }
     }
@@ -172,7 +172,7 @@ impl InputManager {
         let mut actions_buffer = Vec::new();
 
         for (action, ray_key) in emu_keymap {
-            if rl.is_key_pressed(ray_key.clone()) {
+            if rl.is_key_pressed(ray_key) {
                 actions_buffer.push(action);
             }
         };
