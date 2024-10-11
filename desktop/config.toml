@@ -36,11 +36,12 @@ max_fps = 200
 # accuracy.
 tps = 60
 
-# The frequency of the speaker
-frequency = 140.0
+# The frequency of the speaker in Hz
+frequency = 420.0 
 
-# The duration of the emitted sound
-duration = 0.2
+# The duration of the emitted sound 
+# in seconds
+duration = 0.2 
 
 # The volume of the emitted sound (range: 0. to 1. )
 volume = 0.01
