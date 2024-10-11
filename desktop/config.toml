@@ -17,9 +17,9 @@ themes = [
     ["#000000", "#FFFFFF", "#FFFFFF"],
     ["#131C2A", "#6D9FF1", "#486AA0"],
     ["#B57114", "#962B09", "#706513"] 
-]
-#
-# Displays the entered path to the selected
+] 
+
+# Displays the entered path to the selected 
 # ROM at the top middle of the screen.
 show_path = true
 

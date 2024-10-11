@@ -3,6 +3,7 @@ mod audio;
 mod config;
 mod input;
 mod themes;
+mod graphics;
 
 use app::AppManager;
 
