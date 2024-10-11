@@ -57,14 +57,17 @@ impl AppManager {
 
             args: arguments,
         };
+
         instance.audio_manager.load_values_from_config(&instance.config);
         instance.audio_manager.play_async_beep();
-        instance.input_manager.generate_keymaps_from_config(&instance.config);
-        instance.graphics_manager.theme_manager.parse_themes(&instance.config);
 
+        instance.input_manager.generate_keymaps_from_config(&instance.config);
+
+        instance.graphics_manager.theme_manager.parse_themes(&instance.config);
         instance.graphics_manager.rl.set_target_fps(instance.config.max_fps);
         instance.graphics_manager.canvas.clear_background(instance.graphics_manager.get_ui_col("BG".to_string()));
         instance.graphics_manager.canvas.draw_text("LOADING..", 1, 3, 13, instance.graphics_manager.get_ui_col("TEXT".to_string()));
+
         instance
     }
 
