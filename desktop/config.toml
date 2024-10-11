@@ -63,7 +63,7 @@ volume = 0.01
 #       ]
 #
 # In my experience, the following works
-# better with most ROMs.
+# better with most ROMs for wasd controls.
 # Just try out what works for you!
 game_input = [
     "V", "W",     "3", "4",
@@ -77,9 +77,9 @@ game_input = [
 # with the game inputs!
 # Format: ["ACTION", "KEY"]
 emulator_input = [
+    ["PAUSE",       "P"     ]
     ["RESET",       "K"     ],
-    ["EXIT",        "ESCAPE"],
     ["NEXT_THEME",  "T"     ],
-    ["HONK",        "U"     ]
+    ["EXIT",        "ESCAPE"],
 ]
 

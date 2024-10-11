@@ -48,6 +48,8 @@ pub struct Emu {
 
     delay_timer: u8,    // performs any action after finished
     sound_timer: u8,    // plays sound after finished
+
+    pub is_paused: bool,
 }
 
 impl Emu {
@@ -70,7 +72,8 @@ impl Emu {
 
             delay_timer: 0,    // performs any action after finished
             sound_timer: 0,    // plays sound after finished
-
+            
+            is_paused: false,
         };
 
         new_instance.ram[..FONTSET_SIZE].copy_from_slice(&FONTSET);
@@ -127,13 +130,13 @@ impl Emu {
     // CPU
     
     pub fn tick(&mut self) -> bool {
+        if self.is_paused {
+            return false
+        }
         // fetch
         let opcode = self.fetch();
         // decode and execute
-        let framebuffer_modified = self.execute(opcode);
-
-        framebuffer_modified
-        
+        self.execute(opcode)
     }
 
     fn fetch(&mut self) -> u16 {
@@ -451,6 +454,9 @@ impl Emu {
     // TIMERS
 
     pub fn tick_timers(&mut self) -> bool {
+        if self.is_paused {
+            return false;
+        }
         // println!("ticked timer");
         let mut beep = false;
         if self.delay_timer > 0 {

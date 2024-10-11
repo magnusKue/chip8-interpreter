@@ -140,6 +140,9 @@ impl AppManager {
                     println!("ACTION: Exiting game");
                     process::exit(0);
                 }
+                "PAUSE" => {
+                    self.emulator.is_paused ^= true;
+                }
                 _ => {
                     print!("ERROR: Unimplemented ACTION");
                 }

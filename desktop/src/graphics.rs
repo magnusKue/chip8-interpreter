@@ -77,6 +77,12 @@ impl GraphicsManager {
         if config.show_fps {
             d.draw_text(&format!("{}", d.get_fps()), 10, 10, 20, text_col);
         }
+
+        Self::render_pause_menu(d);
+    }
+
+    fn render_pause_menu(mut d: RaylibDrawHandle) {
+        d.draw_text("Hello", 20, 20, 20, Color::RED);
     }
     
 
