@@ -2,7 +2,7 @@ use raylib::prelude::*;
 use chip8_core::*;
 use std::collections::HashMap;
 
-use crate::{config::Config, config::get_action_key_name, themes::ThemeManager};
+use crate::{config::Config, config::get_readable_action_name, themes::ThemeManager};
 
 const WIN_SCALE_FAC: u32 = 15;
 const WIN_WIDTH: u32 = (SCREEN_WIDTH as u32) * WIN_SCALE_FAC;
@@ -87,9 +87,12 @@ impl GraphicsManager {
 
     fn render_pause_menu(mut d: RaylibDrawHandle, bg_col: Color, fg_col: Color, txt_col: Color, config: &Config) {
 
+        let all_options = config.emulator_input.clone();
+        let num_options = all_options.len();
+
         // draw box
         let pm_width: i32 =  320;
-        let pm_height: i32 = 180;
+        let pm_height: i32 = 60 + (num_options * 40) as i32;
         
         let pm_x = ((WIN_WIDTH as i32 - pm_width) as f32 * 0.5) as i32; 
         let pm_y = ((WIN_HEIGHT as i32 - pm_height) as f32 * 0.5) as i32; 
@@ -98,36 +101,20 @@ impl GraphicsManager {
         d.draw_rectangle_lines(pm_x, pm_y, pm_width, pm_height, fg_col);
 
         // draw text
-        let save_key = get_action_key_name(config, "SAVE".to_string());
-        let load_key = get_action_key_name(config, "LOAD".to_string());
-        let pause_key = get_action_key_name(config, "PAUSE".to_string());
 
 
         d.draw_text("Paused:", pm_x + 95, pm_y + 5, 32, fg_col);
         
         let mut offset = 60;
         let textgap = 40;
-
-        if save_key != "None" {
-            d.draw_text(&format!("> Press [{}] to save state", save_key), pm_x + 10, pm_y + offset, 20, txt_col);
-        }
-        else {
-            d.draw_text("[No key set for action SAVE]", pm_x + 10, pm_y + offset, 20, txt_col);
-        }
         
-        offset += textgap;
+        for vec in all_options {
+            if let [name, key] = &vec[..] {
+                d.draw_text(&format!("[{}] to {}", key, get_readable_action_name(name)), pm_x + 10, pm_y + offset, 20, txt_col);
+                offset += textgap; 
+            }
 
-        if load_key != "None" {
-            d.draw_text(&format!("> Press [{}] to load state", load_key), pm_x + 10, pm_y + offset, 20, txt_col);
         }
-        else {
-            d.draw_text("[No key set for action LOAD]", pm_x + 10, pm_y + offset, 20, txt_col);
-        }
-
-        offset += textgap;
-
-        d.draw_text(&format!("> Press [{}] to continue", pause_key), pm_x + 10, pm_y + offset, 20, txt_col);
-        
     }
     
     pub fn get_ui_col(&self, color_name: String) -> Color {

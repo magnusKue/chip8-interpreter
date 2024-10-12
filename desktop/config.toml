@@ -82,6 +82,7 @@ emulator_input = [
     ["NEXT_THEME",  "T"     ],
     ["EXIT",        "ESCAPE"],
     ["LOAD",        "L"     ],
-    ["SAVE",        "O"     ]
+    ["SAVE",        "O"     ],
+    ["HONK",        "H"     ]
 ]
 
