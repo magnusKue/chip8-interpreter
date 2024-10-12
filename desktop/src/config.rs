@@ -28,3 +28,15 @@ pub fn read_config() -> Config {
     
     conf
 }
+
+pub fn get_action_key_name(conf: &Config, action: String) -> String {
+    let mut key: String = "None".to_string();
+
+    for pair in conf.emulator_input.clone() {
+        if pair[0] == action {
+            key = pair[1].clone();
+        }
+    };
+
+    key
+}

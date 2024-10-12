@@ -80,6 +80,8 @@ emulator_input = [
     ["PAUSE",       "P"     ],
     ["RESET",       "K"     ],
     ["NEXT_THEME",  "T"     ],
-    ["EXIT",        "ESCAPE"]
+    ["EXIT",        "ESCAPE"],
+    ["LOAD",        "L"     ],
+    ["SAVE",        "O"     ]
 ]
 
