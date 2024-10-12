@@ -154,7 +154,6 @@ impl AppManager {
                     visuals_modified = true;
                 },
                 "SAVE" => {
-                    println!("SAVE called");
                     self.emu_savestate = savestates::make_save(&self.emulator);
                 },
                 "SCREENSHOT" => {
