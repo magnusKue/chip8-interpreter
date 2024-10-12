@@ -151,8 +151,10 @@ impl AppManager {
                 },
                 "LOAD" => {
                     savestates::load_save(&self.emu_savestate, &mut self.emulator);
+                    visuals_modified = true;
                 },
                 "SAVE" => {
+                    println!("SAVE called");
                     self.emu_savestate = savestates::make_save(&self.emulator);
                 },
                 "SCREENSHOT" => {

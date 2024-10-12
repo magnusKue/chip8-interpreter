@@ -23,10 +23,10 @@ const FONTSET: [u8; FONTSET_SIZE] = [
 
 
 
-const RAM_SIZE: usize = 4096;
-const REGISTER_COUNT: usize = 16;
-const STACK_SIZE: usize = 16;
-const NUM_KEYS: usize = 16;
+pub const RAM_SIZE: usize = 4096;
+pub const REGISTER_COUNT: usize = 16;
+pub const STACK_SIZE: usize = 16;
+pub const NUM_KEYS: usize = 16;
 
 pub const SCREEN_HEIGHT: usize = 32;
 pub const SCREEN_WIDTH: usize = 64;
@@ -34,30 +34,27 @@ pub const SCREEN_WIDTH: usize = 64;
 const START_ADDR: u16 = 0x200;
 
 pub struct Emu {
-    programm_counter: u16,  // to keep count at which instruction we are
-    ram: [u8; RAM_SIZE],
+    pub programm_counter: u16,  // to keep count at which instruction we are
+    pub ram: [u8; RAM_SIZE],
     
-    screen: [bool; SCREEN_WIDTH * SCREEN_HEIGHT],
+    pub screen: [bool; SCREEN_WIDTH * SCREEN_HEIGHT],
     pressed_keys: [bool; NUM_KEYS],
 
-    registers: [u8; REGISTER_COUNT],
-    i_register: u16,
+    pub registers: [u8; REGISTER_COUNT],
+    pub i_register: u16,
     
-    stack_pointer: u16,
-    stack: [u16; STACK_SIZE],
+    pub stack_pointer: u16,
+    pub stack: [u16; STACK_SIZE],
 
-    delay_timer: u8,    // performs any action after finished
-    sound_timer: u8,    // plays sound after finished
+    pub delay_timer: u8,    // performs any action after finished
+    pub sound_timer: u8,    // plays sound after finished
 
     pub is_paused: bool,
 }
 
-impl Emu {
-
-    // NEW INSTANCE
-
-    pub fn new() -> Self {
-        let mut new_instance = Self {
+impl Default for Emu {
+    fn default() -> Self {
+        Emu {
             programm_counter: START_ADDR,  
             ram: [0; RAM_SIZE],
     
@@ -74,7 +71,14 @@ impl Emu {
             sound_timer: 0,    // plays sound after finished
             
             is_paused: false,
-        };
+
+        }
+    }
+}
+
+impl Emu {
+    pub fn new() -> Self {
+        let mut new_instance = Self::default();
 
         new_instance.ram[..FONTSET_SIZE].copy_from_slice(&FONTSET);
 

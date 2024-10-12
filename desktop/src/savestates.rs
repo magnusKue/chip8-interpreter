@@ -45,7 +45,7 @@ pub fn make_save(emulator: &Emu) -> SaveState {
 }
 
 pub fn load_save(save: &SaveState, emulator: &mut Emu) {
-    println!("INFO: SaveState recorded!");
+    println!("INFO: SaveState loaded!");
 
     emulator.programm_counter = save.programm_counter;
     emulator.ram = save.ram;
