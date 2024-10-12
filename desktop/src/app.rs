@@ -5,10 +5,12 @@ use std::fs::File;
 use std::io::Read;
 use std::process;
 
+use crate::savestates;
 use crate::config;
 use crate::graphics::GraphicsManager;
 use crate::input::InputManager;
 use crate::audio::AudioManager;
+use crate::savestates::SaveState;
 
 const WELCOME: &str = r#"
         The Rust
@@ -24,7 +26,8 @@ pub struct AppManager {
 
     emulator: Emu,
     clock_timer: f32,
-    
+
+    emu_savestate: savestates::SaveState,
     config: config::Config,
     audio_manager: AudioManager,
     input_manager: InputManager,
@@ -49,7 +52,7 @@ impl AppManager {
             
             clock_timer: 0.,
             emulator: Emu::new(),
-            
+            emu_savestate: SaveState::default(),    
             config: config::read_config(),
             input_manager: InputManager::new(),
             audio_manager: AudioManager::new(),
@@ -118,6 +121,8 @@ impl AppManager {
 
         self.emulator.load(&buffer);
         println!("INFO: Loaded ROM successfully");
+
+        self.emu_savestate = savestates::make_save(&self.emulator);
     }
 
     fn handle_action(&mut self, actions: Vec<String>) ->bool {
@@ -142,6 +147,19 @@ impl AppManager {
                 "EXIT" => {
                     println!("ACTION: Exiting game");
                     process::exit(0);
+                }
+                "PAUSE" => {
+                    self.emulator.is_paused ^= true;
+                },
+                "LOAD" => {
+                    savestates::load_save(&self.emu_savestate, &mut self.emulator);
+                    visuals_modified = true;
+                },
+                "SAVE" => {
+                    self.emu_savestate = savestates::make_save(&self.emulator);
+                },
+                "SCREENSHOT" => {
+                    println!("Screenshots not yet implemented");
                 }
                 _ => {
                     print!("ERROR: Unimplemented ACTION");
