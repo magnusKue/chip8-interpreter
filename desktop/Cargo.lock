@@ -327,6 +327,7 @@ name = "desktop"
 version = "0.1.0"
 dependencies = [
  "chip8_core",
+ "chrono",
  "raylib",
  "rodio",
  "serde",

@@ -83,6 +83,21 @@ emulator_input = [
     ["EXIT",        "ESCAPE"],
     ["LOAD",        "L"     ],
     ["SAVE",        "O"     ],
-    ["HONK",        "H"     ]
+    ["HONK",        "H"     ],
+    ["SCREENSHOT",  "U"     ]
 ]
 
+
+# The path where to save your screenshots.
+# Make sure this is a valid and relative path!
+screenshot_path = ""
+
+# The desired fileformat for your screenshot.
+# Options are [".jpg", ".png"]
+screenshot_format = ".jpg"
+# Set this to true if you want the ui
+# (pause menu, fps counter etc) to show
+# up in your screenshots. If set to false
+# only the emulators framebuffer will be
+# captured.
+capture_ui = true

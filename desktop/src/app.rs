@@ -7,6 +7,8 @@ use std::process;
 
 use crate::savestates;
 use crate::config;
+use crate::screenshot;
+
 use crate::graphics::GraphicsManager;
 use crate::input::InputManager;
 use crate::audio::AudioManager;
@@ -159,7 +161,7 @@ impl AppManager {
                     self.emu_savestate = savestates::make_save(&self.emulator);
                 },
                 "SCREENSHOT" => {
-                    println!("Screenshots not yet implemented");
+                    screenshot::take_screenshot(&self.config, &self.emulator);
                 }
                 _ => {
                     print!("ERROR: Unimplemented ACTION");

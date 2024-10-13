@@ -1,7 +1,10 @@
 mod app;
 mod audio;
+
+mod screenshot;
 mod savestates;
 mod config;
+
 mod input;
 mod themes;
 mod graphics;
