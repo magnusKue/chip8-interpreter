@@ -3,7 +3,7 @@ use std::fs;
 use std::process;
 
 
-pub const VALID_ACTIONS: [&str; 8] = [
+pub const VALID_ACTIONS: [&str; 7] = [
     "PAUSE",
     "RESET",
     "NEXT_THEME",
@@ -11,7 +11,6 @@ pub const VALID_ACTIONS: [&str; 8] = [
     "LOAD",
     "SAVE",
     "HONK",
-    "SCREENSHOT"
 ];
 
 #[derive(Deserialize, Debug)]
@@ -30,10 +29,6 @@ pub struct Config {
 
     pub game_input: Vec<String>,
     pub emulator_input: Vec<Vec<String>>,
-
-    pub screenshot_format: String,
-    pub screenshot_path: String,
-    pub capture_ui: bool,
 }
 
 pub fn read_config() -> Config {
@@ -65,7 +60,6 @@ pub fn get_readable_action_name(action: &str) -> &str {
         "HONK" => { "honk" },
         "RESET" => { "reset the game" },
         "PAUSE" => { "continue" }
-        "SCREENSHOT" => { "take a screenshot" },
         _ => {
             println!("ERROR: Invalid action");
             "INVALID ACTION"

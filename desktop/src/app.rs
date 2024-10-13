@@ -7,7 +7,6 @@ use std::process;
 
 use crate::savestates;
 use crate::config;
-use crate::screenshot;
 
 use crate::graphics::GraphicsManager;
 use crate::input::InputManager;
@@ -160,9 +159,6 @@ impl AppManager {
                 "SAVE" => {
                     self.emu_savestate = savestates::make_save(&self.emulator);
                 },
-                "SCREENSHOT" => {
-                    screenshot::take_screenshot(&self.config, &self.emulator);
-                }
                 _ => {
                     print!("ERROR: Unimplemented ACTION");
                 }

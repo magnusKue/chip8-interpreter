@@ -1,7 +1,6 @@
 mod app;
 mod audio;
 
-mod screenshot;
 mod savestates;
 mod config;
 
