@@ -20,7 +20,7 @@ impl GraphicsManager {
     pub fn new() -> Self {
             
         let (mut raylib_handle, raylib_thread) = raylib::init()
-            .resizable()
+  //          .resizable()
             .size(WIN_WIDTH as i32, WIN_HEIGHT as i32)
             .title("Chip8 emulator")
             .build();
@@ -66,7 +66,7 @@ impl GraphicsManager {
 
         let mut d = self.rl.begin_drawing(&self.thread);
         
-        d.clear_background(Color::RED);
+        d.clear_background(Color::BLACK);
 
         d.draw_texture_ex(&texture, Vector2::new(0.,0.), 0., (WIN_SCALE_FAC) as f32, Color::WHITE);
         

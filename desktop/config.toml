@@ -21,10 +21,10 @@ themes = [
 
 # Displays the entered path to the selected 
 # ROM at the top middle of the screen.
-show_path = true
+show_path = false
 
 # Displays current fps in top left cornor
-show_fps = true
+show_fps = false
 
 # This limits the FPS and, with it, the 
 # CPU cycles per second. This can affect
@@ -82,6 +82,5 @@ emulator_input = [
     ["NEXT_THEME",  "T"     ],
     ["EXIT",        "ESCAPE"],
     ["LOAD",        "L"     ],
-    ["SAVE",        "O"     ],
-    ["HONK",        "H"     ]
+    ["SAVE",        "O"     ]
 ]
