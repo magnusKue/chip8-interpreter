@@ -1,7 +1,7 @@
 # CHIP-8 Interpreter
-features:
+### features:
 - Keyboard-mapping
 - Themes
 - Customizable through config file
 
-screenshots:
+### screenshots:
