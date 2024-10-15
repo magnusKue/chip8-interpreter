@@ -7,7 +7,7 @@
 - One savestate
 
 ### usage:
-- cargo run [rom path]
+> $ cargo run [rom_path]
 
 ### screenshots:
 ![](screenshots/screenshot_2024-10-13_18-43-09.png)
