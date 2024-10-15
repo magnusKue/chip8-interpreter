@@ -6,6 +6,9 @@
 - Pause menu
 - One savestate
 
+### usage:
+- cargo run [rom path]
+
 ### screenshots:
 ![](screenshots/screenshot_2024-10-13_18-43-09.png)
 ![](screenshots/screenshot_2024-10-13_18-44-33.png)
